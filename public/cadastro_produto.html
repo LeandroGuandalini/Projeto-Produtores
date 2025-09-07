@@ -28,13 +28,13 @@
         <h1 class="text-center mb-4">Cadastro de Produto</h1>
 
         {% with messages = get_flashed_messages() %}
-          {% if messages %}
+            {% if messages %}
             <div class="alert alert-success">
-              {% for msg in messages %}
+                {% for msg in messages %}
                 {{ msg }}
-              {% endfor %}
+                {% endfor %}
             </div>
-          {% endif %}
+            {% endif %}
         {% endwith %}
 
         <form method="POST" action="/cadastro_produto">
