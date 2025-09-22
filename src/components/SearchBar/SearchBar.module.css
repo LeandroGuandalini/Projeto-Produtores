@@ -1,0 +1,54 @@
+/* components/SearchBar/SearchBar.module.css */
+.searchBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--gray-light);
+  border-radius: 25px;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.searchBar:focus-within {
+  background: white;
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.searchIcon {
+  margin-right: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.searchInput::placeholder {
+  color: var(--text-secondary);
+}
+
+.clearButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.clearButton:hover {
+  background: var(--gray-medium);
+  color: var(--text-primary);
+}
