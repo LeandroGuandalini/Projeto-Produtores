@@ -1,6 +1,5 @@
-// components/SearchBar/SearchBar.js
 import React from 'react';
-import { useApp } from '../../src/context/AppContext';
+import { useApp } from '../../context/AppContext';
 import styles from './SearchBar.module.css';
 
 const SearchBar = () => {

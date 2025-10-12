@@ -1,6 +1,6 @@
 // pages/AddProducer/AddProducer.js
 import React, { useState } from 'react';
-import { useApp } from '../../src/context/AppContext';
+import { useApp } from '../../context/AppContext';
 import { validatePhone, validateRequired } from '../../utils/validators';
 import styles from './AddProducer.module.css';
 

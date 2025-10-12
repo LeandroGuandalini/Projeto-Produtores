@@ -1,4 +1,3 @@
-// src/utils/formatters.js
 export const formatPrice = (price) => {
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',

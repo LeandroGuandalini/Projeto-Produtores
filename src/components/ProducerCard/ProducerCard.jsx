@@ -1,6 +1,6 @@
 // components/ProducerCard/ProducerCard.js
 import React from 'react';
-import { useApp } from '../../src/context/AppContext';
+import { useApp } from '../../context/AppContext';
 import { formatPhone } from '../../utils/formatters';
 import styles from './ProducerCard.module.css';
 

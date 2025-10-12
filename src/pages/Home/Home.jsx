@@ -1,6 +1,6 @@
 // pages/Home/Home.js
 import React from 'react';
-import { useApp } from '../../src/context/AppContext';
+import { useApp } from '../../context/AppContext';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import Filter from '../../components/Filter/Filter';
 import styles from './Home.module.css';

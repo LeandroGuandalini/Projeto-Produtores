@@ -1,6 +1,5 @@
-// src/context/AppContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 const AppContext = createContext();
 
@@ -15,6 +14,7 @@ export const useApp = () => {
 export const AppProvider = ({ children }) => {
   const [producers, setProducers] = useLocalStorage('producers', []);
   const [products, setProducts] = useLocalStorage('products', []);
+  const [currentUser, setCurrentUser] = useLocalStorage('currentUser', null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     category: '',
@@ -32,8 +32,10 @@ export const AppProvider = ({ children }) => {
           whatsapp: "5511999999999",
           location: "São Paulo, SP",
           description: "Produtos orgânicos cultivados com amor e cuidado, sem agrotóxicos.",
-          image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=300",
-          categories: ["Hortaliças", "Frutas", "Orgânicos"]
+          image: "https://picsum.photos/id/1000/300/300", // Fazenda
+          categories: ["Hortaliças", "Frutas", "Orgânicos"],
+          email: "fazenda.esperanca@email.com",
+          password: "123456"
         },
         {
           id: 2,
@@ -41,8 +43,10 @@ export const AppProvider = ({ children }) => {
           whatsapp: "5511888888888",
           location: "Minas Gerais, MG",
           description: "Frutas e verduras fresquinhas direto da roça para sua mesa.",
-          image: "https://images.unsplash.com/photo-1560493676-04071c5f467b?w=300",
-          categories: ["Frutas", "Verduras"]
+          image: "https://picsum.photos/id/1001/300/300", // Sítio
+          categories: ["Frutas", "Verduras"],
+          email: "sitio.ze@email.com",
+          password: "123456"
         },
         {
           id: 3,
@@ -50,8 +54,10 @@ export const AppProvider = ({ children }) => {
           whatsapp: "5511777777777",
           location: "Rio de Janeiro, RJ",
           description: "Produtos artesanais e caseiros com receita da vovó.",
-          image: "https://images.unsplash.com/photo-1556909114-4d0d853e5e15?w=300",
-          categories: ["Laticínios", "Artesanato"]
+          image: "https://picsum.photos/id/1002/300/300", // Chácara
+          categories: ["Laticínios", "Artesanato"],
+          email: "chacara.maria@email.com",
+          password: "123456"
         }
       ];
       setProducers(initialProducers);
@@ -64,7 +70,7 @@ export const AppProvider = ({ children }) => {
           name: "Tomate Orgânico",
           price: 8.50,
           description: "Tomates frescos colhidos diariamente, cultivados sem agrotóxicos. Perfeitos para saladas e molhos.",
-          image: "https://images.unsplash.com/photo-1546470427-e212b6e9b45e?w=400",
+          image: "https://picsum.photos/id/1080/400/300", // Tomate
           producerId: 1,
           category: "Hortaliças",
           unit: "kg",
@@ -76,7 +82,7 @@ export const AppProvider = ({ children }) => {
           name: "Banana Prata",
           price: 4.20,
           description: "Bananas maduras e doces, perfeitas para vitaminas e sobremesas. Colhidas no ponto ideal.",
-          image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400",
+          image: "https://picsum.photos/id/109/400/300", // Banana
           producerId: 2,
           category: "Frutas",
           unit: "cacho",
@@ -88,7 +94,7 @@ export const AppProvider = ({ children }) => {
           name: "Queijo Minas",
           price: 25.90,
           description: "Queijo minas artesanal, feito com leite fresco e receita tradicional. Peso aproximado 1kg.",
-          image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400",
+          image: "https://picsum.photos/id/133/400/300", // Queijo
           producerId: 3,
           category: "Laticínios",
           unit: "peça",
@@ -100,35 +106,93 @@ export const AppProvider = ({ children }) => {
           name: "Alface Crespa",
           price: 3.50,
           description: "Alface crespa fresquinha, ideal para saladas. Colhida na manhã da entrega.",
-          image: "https://images.unsplash.com/photo-1592415486684-1d829f3d7126?w=400",
+          image: "https://picsum.photos/id/112/400/300", // Alface
           producerId: 1,
           category: "Verduras",
           unit: "unidade",
           available: true,
           featured: true
+        },
+        {
+          id: 5,
+          name: "Laranja Pera",
+          price: 5.80,
+          description: "Laranjas suculentas e doces, ideais para sucos naturais.",
+          image: "https://picsum.photos/id/119/400/300", // Laranja
+          producerId: 2,
+          category: "Frutas",
+          unit: "kg",
+          available: true,
+          featured: true
+        },
+        {
+          id: 6,
+          name: "Cenoura",
+          price: 4.90,
+          description: "Cenouras frescas e crocantes, perfeitas para saladas e cozidos.",
+          image: "https://picsum.photos/id/122/400/300", // Cenoura
+          producerId: 1,
+          category: "Legumes",
+          unit: "kg",
+          available: true,
+          featured: false
         }
       ];
       setProducts(initialProducts);
     }
   }, [producers.length, products.length, setProducers, setProducts]);
 
+  // Funções de autenticação
+  const login = (email, password) => {
+    const producer = producers.find(p => p.email === email && p.password === password);
+    if (producer) {
+      setCurrentUser(producer);
+      return { success: true, producer };
+    }
+    return { success: false, error: 'Email ou senha incorretos' };
+  };
+
+  const logout = () => {
+    setCurrentUser(null);
+  };
+
+  const registerProducer = (producerData) => {
+    const existingProducer = producers.find(p => p.email === producerData.email);
+    if (existingProducer) {
+      return { success: false, error: 'Email já cadastrado' };
+    }
+
+    const newProducer = {
+      ...producerData,
+      id: Date.now(),
+      categories: [],
+      image: "https://picsum.photos/id/177/300/300" // Imagem padrão para novos produtores
+    };
+
+    setProducers(prev => [...prev, newProducer]);
+    setCurrentUser(newProducer);
+    
+    return { success: true, producer: newProducer };
+  };
+
+  // Modificar addProduct para usar o produtor logado
   const addProduct = (newProduct) => {
+    if (!currentUser) {
+      throw new Error('Você precisa estar logado para cadastrar produtos');
+    }
+
     const productWithId = {
       ...newProduct,
       id: Date.now(),
+      producerId: currentUser.id, // Sempre usa o ID do produtor logado
       createdAt: new Date().toISOString(),
       available: true,
-      featured: false
+      featured: false,
+      image: newProduct.image || "https://picsum.photos/id/292/400/300" // Imagem padrão para novos produtos
     };
+    
     setProducts(prev => [...prev, productWithId]);
-  };
-
-  const addProducer = (newProducer) => {
-    const producerWithId = {
-      ...newProducer,
-      id: Date.now()
-    };
-    setProducers(prev => [...prev, producerWithId]);
+    return productWithId;
   };
 
   // Filtrar produtos
@@ -149,18 +213,31 @@ export const AppProvider = ({ children }) => {
   const featuredProducts = products.filter(product => product.featured && product.available);
   const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
 
+  // Produtos do produtor logado
+  const myProducts = currentUser 
+    ? products.filter(product => product.producerId === currentUser.id)
+    : [];
+
   const value = {
+    // Estado
     producers,
     products: filteredProducts,
     allProducts: products,
     featuredProducts,
+    myProducts,
     categories,
     searchTerm,
     setSearchTerm,
     filters,
     setFilters,
+    currentUser,
+    
+    // Ações
+    login,
+    logout,
+    registerProducer,
     addProduct,
-    addProducer,
+    setCurrentUser,
     getProducerById: (id) => producers.find(p => p.id === id)
   };
 

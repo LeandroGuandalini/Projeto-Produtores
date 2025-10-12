@@ -1,6 +1,6 @@
 // components/Filter/Filter.js
 import React from 'react';
-import { useApp } from '../../src/context/AppContext';
+import { useApp } from '../../context/AppContext';
 import styles from './Filter.module.css';
 
 const Filter = () => {

@@ -1,6 +1,6 @@
 // hooks/useProducts.js
 import { useMemo } from 'react';
-import { useApp } from '../src/context/AppContext';
+import { useApp } from '../context/AppContext';
 
 export const useProducts = () => {
   const { products, producers, filters, searchTerm } = useApp();

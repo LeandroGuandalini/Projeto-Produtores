@@ -1,12 +1,16 @@
-// components/ProductCard/ProductCard.js
-import React from 'react';
-import { useApp } from '../../src/context/AppContext';
+import React, { useState } from 'react';
+import { useApp } from '../../context/AppContext';
 import { formatPrice } from '../../utils/formatters';
 import styles from './ProductCard.module.css';
 
 const ProductCard = ({ product, onSelect }) => {
   const { getProducerById } = useApp();
   const producer = getProducerById(product.producerId);
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
 
   const handleWhatsAppClick = (e) => {
     e.stopPropagation();
@@ -23,10 +27,18 @@ const ProductCard = ({ product, onSelect }) => {
     }
   };
 
+  // Imagem padrão caso a URL falhe
+  const defaultImage = "https://picsum.photos/id/292/400/300";
+
   return (
     <div className={styles.productCard} onClick={handleCardClick}>
       <div className={styles.imageContainer}>
-        <img src={product.image} alt={product.name} className={styles.image} />
+        <img 
+          src={imageError ? defaultImage : product.image} 
+          alt={product.name} 
+          className={styles.image}
+          onError={handleImageError}
+        />
         {product.featured && <span className={styles.featuredBadge}>⭐ Destaque</span>}
         <span className={styles.categoryBadge}>{product.category}</span>
       </div>

@@ -1,4 +1,3 @@
-/* components/Header/Header.module.css */
 .header {
   background: white;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
@@ -57,7 +56,6 @@
   font-weight: 500;
   transition: all 0.3s ease;
   border-radius: 8px;
-  position: relative;
 }
 
 .navBtn:hover {
@@ -70,18 +68,6 @@
   background: var(--primary-light);
 }
 
-.navBtn.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  background: var(--primary-color);
-  border-radius: 50%;
-}
-
 .navActions {
   display: flex;
   gap: 0.75rem;
@@ -89,7 +75,7 @@
 }
 
 .btnPrimary {
-  background: var(--primary-gradient);
+  background: var(--primary-color);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -101,8 +87,8 @@
 }
 
 .btnPrimary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  background: var(--primary-dark);
+  transform: translateY(-1px);
 }
 
 .btnSecondary {
@@ -177,16 +163,68 @@
   .menuToggle {
     display: flex;
   }
+}
 
-  .menuToggleOpen span:nth-child(1) {
-    transform: rotate(45deg) translate(6px, 6px);
-  }
+.userMenu {
+  position: relative;
+}
 
-  .menuToggleOpen span:nth-child(2) {
-    opacity: 0;
-  }
+.userButton {
+  background: var(--primary-light);
+  color: var(--primary-color);
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
-  .menuToggleOpen span:nth-child(3) {
-    transform: rotate(-45deg) translate(6px, -6px);
-  }
+.userName {
+  white-space: nowrap;
+}
+
+.userDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  z-index: 1000;
+  margin-top: 0.5rem;
+}
+
+.userInfo {
+  padding: 1rem;
+  border-bottom: 1px solid var(--gray-medium);
+}
+
+.userInfo strong {
+  display: block;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.userInfo span {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.dropdownItem {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.dropdownItem:hover {
+  background: var(--gray-light);
 }
