@@ -6,7 +6,7 @@
 }
 
 .card {
-  max-width: 400px;
+  max-width: 500px;
   margin: 0 auto;
   background: white;
   padding: 2rem;
@@ -90,6 +90,62 @@
   cursor: not-allowed;
 }
 
+.demo {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gray-medium);
+}
+
+.demo h3 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.demoAccounts {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.demoAccount {
+  background: var(--gray-light);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+}
+
+.demoAccount p {
+  margin: 0.25rem 0;
+}
+
+.demoEmail,
+.demoPassword {
+  font-family: monospace;
+  background: white;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  border: 1px solid var(--gray-medium);
+}
+
+.demoButton {
+  width: 100%;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.demoButton:hover {
+  background: var(--primary-dark);
+}
+
 .switch {
   text-align: center;
   padding-top: 1.5rem;
@@ -117,25 +173,21 @@
   color: white;
 }
 
-.demo {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--gray-medium);
-}
+@media (max-width: 768px) {
+  .card {
+    padding: 1rem;
+    margin: 0 1rem;
+  }
 
-.demo h3 {
-  color: var(--text-primary);
-  margin-bottom: 1rem;
-  font-size: 1rem;
-}
+  .title {
+    font-size: 1.75rem;
+  }
 
-.demoAccounts {
-  background: var(--gray-light);
-  padding: 1rem;
-  border-radius: var(--border-radius);
-  font-size: 0.875rem;
-}
+  .demoAccounts {
+    gap: 0.75rem;
+  }
 
-.demoAccounts p {
-  margin: 0.25rem 0;
+  .demoAccount {
+    padding: 0.75rem;
+  }
 }

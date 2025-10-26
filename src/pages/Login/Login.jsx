@@ -42,6 +42,13 @@ const Login = ({ onSuccess, onSwitchToRegister }) => {
     }
   };
 
+  const fillDemoCredentials = (email, password) => {
+    setFormData({
+      email,
+      password
+    });
+  };
+
   return (
     <div className={styles.login}>
       <div className="container">
@@ -97,6 +104,47 @@ const Login = ({ onSuccess, onSwitchToRegister }) => {
             </button>
           </form>
 
+          <div className={styles.demo}>
+            <h3>Contas de Demonstração:</h3>
+            <div className={styles.demoAccounts}>
+              <div className={styles.demoAccount}>
+                <p><strong>Fazenda Esperança</strong></p>
+                <p>Email: <span className={styles.demoEmail}>fazenda.esperanca@email.com</span></p>
+                <p>Senha: <span className={styles.demoPassword}>123456</span></p>
+                <button 
+                  className={styles.demoButton}
+                  onClick={() => fillDemoCredentials('fazenda.esperanca@email.com', '123456')}
+                >
+                  Usar esta conta
+                </button>
+              </div>
+              
+              <div className={styles.demoAccount}>
+                <p><strong>Sítio do Seu Zé</strong></p>
+                <p>Email: <span className={styles.demoEmail}>sitio.ze@email.com</span></p>
+                <p>Senha: <span className={styles.demoPassword}>123456</span></p>
+                <button 
+                  className={styles.demoButton}
+                  onClick={() => fillDemoCredentials('sitio.ze@email.com', '123456')}
+                >
+                  Usar esta conta
+                </button>
+              </div>
+              
+              <div className={styles.demoAccount}>
+                <p><strong>Chácara da Maria</strong></p>
+                <p>Email: <span className={styles.demoEmail}>chacara.maria@email.com</span></p>
+                <p>Senha: <span className={styles.demoPassword}>123456</span></p>
+                <button 
+                  className={styles.demoButton}
+                  onClick={() => fillDemoCredentials('chacara.maria@email.com', '123456')}
+                >
+                  Usar esta conta
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div className={styles.switch}>
             <p>Não tem uma conta?</p>
             <button 
@@ -105,16 +153,6 @@ const Login = ({ onSuccess, onSwitchToRegister }) => {
             >
               Cadastrar como Produtor
             </button>
-          </div>
-
-          <div className={styles.demo}>
-            <h3>Contas de Demonstração:</h3>
-            <div className={styles.demoAccounts}>
-              <p><strong>Email:</strong> fazenda.esperanca@email.com</p>
-              <p><strong>Senha:</strong> 123456</p>
-              <p><strong>Email:</strong> sitio.ze@email.com</p>
-              <p><strong>Senha:</strong> 123456</p>
-            </div>
           </div>
         </div>
       </div>

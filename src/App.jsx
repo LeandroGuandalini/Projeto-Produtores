@@ -9,13 +9,25 @@ import AddProducer from './pages/AddProducer/AddProducer';
 import ProductDetail from './pages/ProductDetail/ProductDetail';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
+import Dashboard from './pages/Dashboard/Dashboard';
+import EditProduct from './pages/EditProduct/EditProduct';
 import './App.css';
 
 function AppContent() {
   const { currentUser } = useApp();
   const [currentPage, setCurrentPage] = useState('home');
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
+  const [editingProductId, setEditingProductId] = useState(null);
+  const [authMode, setAuthMode] = useState('login');
+
+  const handleEditProduct = (productId) => {
+    setEditingProductId(productId);
+    setCurrentPage('edit-product');
+  };
+
+  const handleAddProduct = () => {
+    setCurrentPage('add-product');
+  };
 
   const renderPage = () => {
     switch(currentPage) {
@@ -32,7 +44,6 @@ function AppContent() {
       case 'producers':
         return <Producers />;
       case 'add-product':
-        // Se não estiver logado, redireciona para login
         if (!currentUser) {
           setAuthMode('login');
           return <Login 
@@ -40,7 +51,7 @@ function AppContent() {
             onSwitchToRegister={() => setAuthMode('register')}
           />;
         }
-        return <AddProduct onSuccess={() => setCurrentPage('products')} />;
+        return <AddProduct onSuccess={() => setCurrentPage('dashboard')} />;
       case 'add-producer':
         return <AddProducer onSuccess={() => setCurrentPage('producers')} />;
       case 'product-detail':
@@ -58,6 +69,23 @@ function AppContent() {
           onSuccess={() => setCurrentPage('home')}
           onSwitchToLogin={() => setAuthMode('login')}
         />;
+      case 'dashboard':
+        return <Dashboard 
+          onEditProduct={handleEditProduct}
+          onAddProduct={handleAddProduct}
+        />;
+      case 'edit-product':
+        return <EditProduct 
+          productId={editingProductId}
+          onSuccess={() => {
+            setCurrentPage('dashboard');
+            setEditingProductId(null);
+          }}
+          onCancel={() => {
+            setCurrentPage('dashboard');
+            setEditingProductId(null);
+          }}
+        />;
       default:
         return <Home onProductSelect={(product) => {
           setSelectedProduct(product);
@@ -68,7 +96,10 @@ function AppContent() {
 
   return (
     <div className="App">
-      <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <Header 
+        currentPage={currentPage} 
+        setCurrentPage={setCurrentPage}
+      />
       <main>
         {renderPage()}
       </main>

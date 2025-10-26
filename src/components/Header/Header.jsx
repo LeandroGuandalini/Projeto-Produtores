@@ -14,10 +14,16 @@ const Header = ({ currentPage, setCurrentPage }) => {
     setCurrentPage('home');
   };
 
+  const handleNavigation = (page) => {
+    setCurrentPage(page);
+    setShowMobileMenu(false);
+    setShowUserMenu(false);
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <div className={styles.logo} onClick={() => setCurrentPage('home')}>
+        <div className={styles.logo} onClick={() => handleNavigation('home')}>
           <span className={styles.logoIcon}>🌱</span>
           <h1>Produtos Locais</h1>
         </div>
@@ -29,28 +35,19 @@ const Header = ({ currentPage, setCurrentPage }) => {
         <nav className={`${styles.nav} ${showMobileMenu ? styles.navOpen : ''}`}>
           <button 
             className={`${styles.navBtn} ${currentPage === 'home' ? styles.active : ''}`}
-            onClick={() => {
-              setCurrentPage('home');
-              setShowMobileMenu(false);
-            }}
+            onClick={() => handleNavigation('home')}
           >
             Início
           </button>
           <button 
             className={`${styles.navBtn} ${currentPage === 'products' ? styles.active : ''}`}
-            onClick={() => {
-              setCurrentPage('products');
-              setShowMobileMenu(false);
-            }}
+            onClick={() => handleNavigation('products')}
           >
             Produtos
           </button>
           <button 
             className={`${styles.navBtn} ${currentPage === 'producers' ? styles.active : ''}`}
-            onClick={() => {
-              setCurrentPage('producers');
-              setShowMobileMenu(false);
-            }}
+            onClick={() => handleNavigation('producers')}
           >
             Produtores
           </button>
@@ -72,19 +69,22 @@ const Header = ({ currentPage, setCurrentPage }) => {
                     </div>
                     <button 
                       className={styles.dropdownItem}
-                      onClick={() => {
-                        setCurrentPage('add-product');
-                        setShowUserMenu(false);
-                        setShowMobileMenu(false);
-                      }}
+                      onClick={() => handleNavigation('dashboard')}
                     >
-                      Cadastrar Produto
+                      📊 Meu Dashboard
                     </button>
+                    <button 
+                      className={styles.dropdownItem}
+                      onClick={() => handleNavigation('add-product')}
+                    >
+                      ➕ Cadastrar Produto
+                    </button>
+                    <div className={styles.dropdownDivider}></div>
                     <button 
                       className={styles.dropdownItem}
                       onClick={handleLogout}
                     >
-                      Sair
+                      🚪 Sair
                     </button>
                   </div>
                 )}
@@ -93,19 +93,13 @@ const Header = ({ currentPage, setCurrentPage }) => {
               <>
                 <button 
                   className={styles.btnSecondary}
-                  onClick={() => {
-                    setCurrentPage('login');
-                    setShowMobileMenu(false);
-                  }}
+                  onClick={() => handleNavigation('login')}
                 >
                   Entrar
                 </button>
                 <button 
                   className={styles.btnPrimary}
-                  onClick={() => {
-                    setCurrentPage('register');
-                    setShowMobileMenu(false);
-                  }}
+                  onClick={() => handleNavigation('register')}
                 >
                   Cadastrar
                 </button>
@@ -115,7 +109,7 @@ const Header = ({ currentPage, setCurrentPage }) => {
         </nav>
 
         <button 
-          className={styles.menuToggle}
+          className={`${styles.menuToggle} ${showMobileMenu ? styles.menuToggleOpen : ''}`}
           onClick={() => setShowMobileMenu(!showMobileMenu)}
         >
           <span></span>
@@ -128,3 +122,4 @@ const Header = ({ currentPage, setCurrentPage }) => {
 };
 
 export default Header;
+

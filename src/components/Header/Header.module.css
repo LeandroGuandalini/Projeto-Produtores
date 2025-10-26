@@ -56,6 +56,7 @@
   font-weight: 500;
   transition: all 0.3s ease;
   border-radius: 8px;
+  position: relative;
 }
 
 .navBtn:hover {
@@ -68,6 +69,18 @@
   background: var(--primary-light);
 }
 
+.navBtn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: var(--primary-color);
+  border-radius: 50%;
+}
+
 .navActions {
   display: flex;
   gap: 0.75rem;
@@ -75,7 +88,7 @@
 }
 
 .btnPrimary {
-  background: var(--primary-color);
+  background: var(--primary-gradient);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -87,8 +100,8 @@
 }
 
 .btnPrimary:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
 
 .btnSecondary {
@@ -107,6 +120,86 @@
   background: var(--gray-medium);
 }
 
+.userMenu {
+  position: relative;
+}
+
+.userButton {
+  background: var(--primary-light);
+  color: var(--primary-color);
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.userButton:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.userName {
+  white-space: nowrap;
+}
+
+.userDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  z-index: 1000;
+  margin-top: 0.5rem;
+  border: 1px solid var(--gray-medium);
+}
+
+.userInfo {
+  padding: 1rem;
+  border-bottom: 1px solid var(--gray-medium);
+}
+
+.userInfo strong {
+  display: block;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.userInfo span {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.dropdownItem {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdownItem:hover {
+  background: var(--gray-light);
+}
+
+.dropdownDivider {
+  height: 1px;
+  background: var(--gray-medium);
+  margin: 0.5rem 0;
+}
+
 .menuToggle {
   display: none;
   flex-direction: column;
@@ -122,6 +215,18 @@
   height: 3px;
   background: var(--text-primary);
   transition: all 0.3s ease;
+}
+
+.menuToggleOpen span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.menuToggleOpen span:nth-child(2) {
+  opacity: 0;
+}
+
+.menuToggleOpen span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
 }
 
 @media (max-width: 968px) {
@@ -165,66 +270,14 @@
   }
 }
 
-.userMenu {
-  position: relative;
-}
-
-.userButton {
-  background: var(--primary-light);
-  color: var(--primary-color);
-  border: none;
-  padding: 0.75rem 1rem;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.userName {
-  white-space: nowrap;
-}
-
-.userDropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: white;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-lg);
-  min-width: 200px;
-  z-index: 1000;
-  margin-top: 0.5rem;
-}
-
-.userInfo {
-  padding: 1rem;
-  border-bottom: 1px solid var(--gray-medium);
-}
-
-.userInfo strong {
-  display: block;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.userInfo span {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-.dropdownItem {
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 0.75rem 1rem;
-  text-align: left;
-  cursor: pointer;
-  color: var(--text-primary);
-  transition: all 0.3s ease;
-}
-
-.dropdownItem:hover {
-  background: var(--gray-light);
+@media (max-width: 480px) {
+  .logo h1 {
+    font-size: 1.25rem;
+  }
+  
+  .btnPrimary,
+  .btnSecondary {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
 }
