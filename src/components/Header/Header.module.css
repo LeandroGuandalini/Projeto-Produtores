@@ -281,3 +281,59 @@
     font-size: 0.9rem;
   }
 }
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+  margin-right: 1rem;
+}
+
+.actionBtn {
+  background: var(--gray-light);
+  border: none;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.actionBtn:hover {
+  background: var(--gray-medium);
+  transform: translateY(-1px);
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--error);
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+@media (max-width: 968px) {
+  .actionButtons {
+    order: -1;
+    margin-right: 0;
+    margin-bottom: 1rem;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .navOpen .actionButtons {
+    display: flex;
+  }
+}

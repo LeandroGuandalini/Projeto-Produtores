@@ -4,21 +4,23 @@ import { formatPrice } from '../../utils/formatters';
 import styles from './ProductCard.module.css';
 
 const ProductCard = ({ product, onSelect }) => {
-  const { getProducerById } = useApp();
+  const { getProducerById, addToFavorites, removeFromFavorites, favorites, handleWhatsAppClick } = useApp();
   const producer = getProducerById(product.producerId);
   const [imageError, setImageError] = useState(false);
+
+  const isFavorite = favorites.some(fav => fav.id === product.id);
 
   const handleImageError = () => {
     setImageError(true);
   };
 
-  const handleWhatsAppClick = (e) => {
+  const handleFavoriteClick = (e) => {
     e.stopPropagation();
-    if (!producer) return;
-    
-    const message = `Olá! Gostaria de saber mais sobre o produto: ${product.name}`;
-    const whatsappUrl = `https://wa.me/${producer.whatsapp}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+    if (isFavorite) {
+      removeFromFavorites(product.id);
+    } else {
+      addToFavorites(product);
+    }
   };
 
   const handleCardClick = () => {
@@ -33,6 +35,13 @@ const ProductCard = ({ product, onSelect }) => {
   return (
     <div className={styles.productCard} onClick={handleCardClick}>
       <div className={styles.imageContainer}>
+        <button 
+          className={`${styles.favoriteButton} ${isFavorite ? styles.favorited : ''}`}
+          onClick={handleFavoriteClick}
+          title={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+        >
+          {isFavorite ? '❤️' : '🤍'}
+        </button>
         <img 
           src={imageError ? defaultImage : product.image} 
           alt={product.name} 
@@ -58,7 +67,13 @@ const ProductCard = ({ product, onSelect }) => {
           </div>
         </div>
         
-        <button className={styles.whatsappButton} onClick={handleWhatsAppClick}>
+        <button 
+          className={styles.whatsappButton} 
+          onClick={(e) => {
+            e.stopPropagation();
+            handleWhatsAppClick(product, producer);
+          }}
+        >
           <span className={styles.whatsappIcon}>💬</span>
           Contatar via WhatsApp
         </button>

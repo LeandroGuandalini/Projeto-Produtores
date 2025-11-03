@@ -15,6 +15,9 @@ export const AppProvider = ({ children }) => {
   const [producers, setProducers] = useLocalStorage('producers', []);
   const [products, setProducts] = useLocalStorage('products', []);
   const [currentUser, setCurrentUser] = useLocalStorage('currentUser', null);
+  const [favorites, setFavorites] = useLocalStorage('favorites', []);
+  const [conversationHistory, setConversationHistory] = useLocalStorage('conversationHistory', []);
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     category: '',
@@ -33,7 +36,8 @@ export const AppProvider = ({ children }) => {
       image: "https://picsum.photos/id/1000/300/300",
       categories: ["Hortaliças", "Frutas", "Orgânicos"],
       email: "fazenda.esperanca@email.com",
-      password: "123456"
+      password: "123456",
+      type: "producer"
     },
     {
       id: 2,
@@ -44,7 +48,8 @@ export const AppProvider = ({ children }) => {
       image: "https://picsum.photos/id/1001/300/300",
       categories: ["Frutas", "Verduras"],
       email: "sitio.ze@email.com",
-      password: "123456"
+      password: "123456",
+      type: "producer"
     },
     {
       id: 3,
@@ -55,7 +60,8 @@ export const AppProvider = ({ children }) => {
       image: "https://picsum.photos/id/1002/300/300",
       categories: ["Laticínios", "Artesanato"],
       email: "chacara.maria@email.com",
-      password: "123456"
+      password: "123456",
+      type: "producer"
     }
   ];
 
@@ -146,18 +152,12 @@ export const AppProvider = ({ children }) => {
     }
   ];
 
-  // Carregar dados iniciais - SEMPRE recria os dados
+  // Carregar dados iniciais
   useEffect(() => {
     console.log('Inicializando dados...');
-    
-    // Sempre definir os produtores iniciais
     setProducers(initialProducers);
-    
-    // Sempre definir os produtos iniciais  
     setProducts(initialProducts);
-    
-    console.log('Produtores inicializados:', initialProducers.map(p => ({ email: p.email, senha: p.password })));
-  }, []); // Removemos as dependências para sempre executar
+  }, []);
 
   // Funções de autenticação
   const login = (email, password) => {
@@ -165,7 +165,6 @@ export const AppProvider = ({ children }) => {
     console.log('Email digitado:', email);
     console.log('Senha digitada:', password);
     
-    // Usar os produtores atuais do estado
     const producer = producers.find(p => {
       const match = p.email === email && p.password === password;
       console.log(`Verificando ${p.email}: ${p.password} - Match: ${match}`);
@@ -197,7 +196,8 @@ export const AppProvider = ({ children }) => {
       ...producerData,
       id: Date.now(),
       categories: [],
-      image: "https://picsum.photos/id/177/300/300"
+      image: "https://picsum.photos/id/177/300/300",
+      type: "producer"
     };
 
     setProducers(prev => [...prev, newProducer]);
@@ -206,7 +206,7 @@ export const AppProvider = ({ children }) => {
     return { success: true, producer: newProducer };
   };
 
-  // Modificar addProduct para usar o produtor logado
+  // Funções de produtos
   const addProduct = (newProduct) => {
     if (!currentUser) {
       throw new Error('Você precisa estar logado para cadastrar produtos');
@@ -227,7 +227,6 @@ export const AppProvider = ({ children }) => {
     return productWithId;
   };
 
-  // Editar produto
   const updateProduct = (productId, updatedData) => {
     if (!currentUser) {
       throw new Error('Você precisa estar logado para editar produtos');
@@ -240,7 +239,6 @@ export const AppProvider = ({ children }) => {
     ));
   };
 
-  // Excluir produto
   const deleteProduct = (productId) => {
     if (!currentUser) {
       throw new Error('Você precisa estar logado para excluir produtos');
@@ -249,6 +247,50 @@ export const AppProvider = ({ children }) => {
     setProducts(prev => prev.filter(product => 
       !(product.id === productId && product.producerId === currentUser.id)
     ));
+  };
+
+  // Funções de favoritos
+  const addToFavorites = (product) => {
+    setFavorites(prev => {
+      if (prev.find(fav => fav.id === product.id)) return prev;
+      return [...prev, product];
+    });
+  };
+
+  const removeFromFavorites = (productId) => {
+    setFavorites(prev => prev.filter(fav => fav.id !== productId));
+  };
+
+  // Funções de histórico de conversas
+  const addToConversationHistory = (conversationData) => {
+    const conversation = {
+      ...conversationData,
+      id: Date.now(),
+      timestamp: new Date().toISOString()
+    };
+    
+    setConversationHistory(prev => [conversation, ...prev.slice(0, 49)]);
+  };
+
+  const clearConversationHistory = () => {
+    setConversationHistory([]);
+  };
+
+  // Função de WhatsApp com histórico
+  const handleWhatsAppClick = (product, producer) => {
+    const message = `Olá! Gostaria de saber mais sobre o produto: ${product.name}`;
+    const whatsappUrl = `https://wa.me/${producer.whatsapp}?text=${encodeURIComponent(message)}`;
+    
+    // Registrar no histórico
+    addToConversationHistory({
+      productName: product.name,
+      producerName: producer.name,
+      phone: producer.whatsapp,
+      productId: product.id,
+      producerId: producer.id
+    });
+    
+    window.open(whatsappUrl, '_blank');
   };
 
   // Filtrar produtos
@@ -287,6 +329,8 @@ export const AppProvider = ({ children }) => {
     filters,
     setFilters,
     currentUser,
+    favorites,
+    conversationHistory,
     
     // Ações
     login,
@@ -296,7 +340,12 @@ export const AppProvider = ({ children }) => {
     updateProduct,
     deleteProduct,
     setCurrentUser,
-    getProducerById: (id) => producers.find(p => p.id === id)
+    getProducerById: (id) => producers.find(p => p.id === id),
+    addToFavorites,
+    removeFromFavorites,
+    addToConversationHistory,
+    clearConversationHistory,
+    handleWhatsAppClick
   };
 
   return (
