@@ -1,4 +1,3 @@
-// pages/Home/Home.js
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import ProductCard from '../../components/ProductCard/ProductCard';
@@ -6,7 +5,7 @@ import Filter from '../../components/Filter/Filter';
 import styles from './Home.module.css';
 
 const Home = ({ onProductSelect }) => {
-  const { featuredProducts, producers, products, searchTerm } = useApp();
+  const { featuredProducts, producers, products, searchTerm, filteredProducts } = useApp();
 
   const stats = [
     { value: producers.length, label: 'Produtores Cadastrados' },
@@ -14,6 +13,8 @@ const Home = ({ onProductSelect }) => {
     { value: '100%', label: 'Direto do Produtor' },
     { value: featuredProducts.length, label: 'Produtos em Destaque' }
   ];
+
+  const displayProducts = searchTerm ? filteredProducts : featuredProducts;
 
   return (
     <div className={styles.home}>
@@ -56,7 +57,7 @@ const Home = ({ onProductSelect }) => {
           </h2>
           
           <div className={styles.productsGrid}>
-            {featuredProducts.map(product => (
+            {displayProducts.map(product => (
               <ProductCard 
                 key={product.id} 
                 product={product} 
@@ -65,7 +66,7 @@ const Home = ({ onProductSelect }) => {
             ))}
           </div>
 
-          {featuredProducts.length === 0 && (
+          {displayProducts.length === 0 && (
             <div className={styles.emptyState}>
               <p>Nenhum produto encontrado. Tente ajustar os filtros.</p>
             </div>

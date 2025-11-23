@@ -4,7 +4,7 @@ import { formatPrice } from '../../utils/formatters';
 import styles from './Analytics.module.css';
 
 const Analytics = () => {
-  const { currentUser, products, conversationHistory } = useApp();
+  const { currentUser, products } = useApp();
 
   if (!currentUser || currentUser.type !== 'producer') {
     return (
@@ -24,25 +24,16 @@ const Analytics = () => {
   const availableProducts = producerProducts.filter(p => p.available);
   const featuredProducts = producerProducts.filter(p => p.featured);
   
-  // Conversas relacionadas aos produtos do produtor
-  const producerConversations = conversationHistory.filter(conv => 
-    producerProducts.some(p => p.name === conv.productName)
-  );
-
   // Métricas
   const totalProducts = producerProducts.length;
-  const totalConversations = producerConversations.length;
-  const conversionRate = totalProducts > 0 ? (totalConversations / totalProducts * 100).toFixed(1) : 0;
   const totalRevenue = producerProducts.reduce((sum, product) => sum + (product.price * (product.quantity || 0)), 0);
+  const totalUnits = producerProducts.reduce((sum, product) => sum + (product.quantity || 0), 0);
 
-  // Produtos mais populares (por conversas)
-  const productPopularity = producerProducts.map(product => {
-    const conversations = producerConversations.filter(conv => conv.productName === product.name);
-    return {
-      ...product,
-      conversationCount: conversations.length
-    };
-  }).sort((a, b) => b.conversationCount - a.conversationCount);
+  // Produtos por categoria
+  const productsByCategory = producerProducts.reduce((acc, product) => {
+    acc[product.category] = (acc[product.category] || 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <div className={styles.analytics}>
@@ -60,17 +51,6 @@ const Analytics = () => {
               <span className={styles.statNumber}>{totalProducts}</span>
               <span className={styles.statSubtitle}>
                 {availableProducts.length} disponíveis
-              </span>
-            </div>
-          </div>
-
-          <div className={styles.statCard}>
-            <div className={styles.statIcon}>💬</div>
-            <div className={styles.statInfo}>
-              <h3>Conversas Iniciadas</h3>
-              <span className={styles.statNumber}>{totalConversations}</span>
-              <span className={styles.statSubtitle}>
-                Taxa de conversão: {conversionRate}%
               </span>
             </div>
           </div>
@@ -96,22 +76,35 @@ const Analytics = () => {
               </span>
             </div>
           </div>
+
+          <div className={styles.statCard}>
+            <div className={styles.statIcon}>📊</div>
+            <div className={styles.statInfo}>
+              <h3>Unidades em Estoque</h3>
+              <span className={styles.statNumber}>{totalUnits}</span>
+              <span className={styles.statSubtitle}>
+                Total de unidades
+              </span>
+            </div>
+          </div>
         </div>
 
         <div className={styles.chartsSection}>
           <div className={styles.popularProducts}>
-            <h3>🏆 Produtos Mais Populares</h3>
+            <h3>📈 Distribuição por Categoria</h3>
             <div className={styles.productsList}>
-              {productPopularity.slice(0, 5).map((product, index) => (
-                <div key={product.id} className={styles.productRank}>
+              {Object.entries(productsByCategory).map(([category, count], index) => (
+                <div key={category} className={styles.productRank}>
                   <div className={styles.rankNumber}>{index + 1}</div>
                   <div className={styles.productInfo}>
-                    <h4>{product.name}</h4>
-                    <p>{formatPrice(product.price)}/{product.unit}</p>
+                    <h4>{category}</h4>
+                    <p>{count} produto{count !== 1 ? 's' : ''}</p>
                   </div>
                   <div className={styles.conversationCount}>
-                    <span className={styles.count}>{product.conversationCount}</span>
-                    <small>conversas</small>
+                    <span className={styles.count}>
+                      {((count / totalProducts) * 100).toFixed(0)}%
+                    </span>
+                    <small>do total</small>
                   </div>
                 </div>
               ))}
@@ -119,19 +112,19 @@ const Analytics = () => {
           </div>
 
           <div className={styles.conversationStats}>
-            <h3>📈 Estatísticas de Conversas</h3>
+            <h3>📋 Resumo do Inventário</h3>
             <div className={styles.conversationChart}>
-              {productPopularity.slice(0, 5).map(product => (
+              {producerProducts.slice(0, 5).map(product => (
                 <div key={product.id} className={styles.chartBar}>
                   <div className={styles.barLabel}>{product.name}</div>
                   <div className={styles.barContainer}>
                     <div 
                       className={styles.barFill}
                       style={{ 
-                        width: `${(product.conversationCount / Math.max(...productPopularity.map(p => p.conversationCount)) * 100)}%` 
+                        width: `${Math.min((product.quantity || 0) / 100 * 100, 100)}%` 
                       }}
                     >
-                      <span className={styles.barValue}>{product.conversationCount}</span>
+                      <span className={styles.barValue}>{product.quantity || 0} {product.unit}</span>
                     </div>
                   </div>
                 </div>
@@ -143,17 +136,7 @@ const Analytics = () => {
         <div className={styles.insights}>
           <h3>💡 Insights e Recomendações</h3>
           <div className={styles.insightsGrid}>
-            {totalConversations === 0 && (
-              <div className={styles.insightCard}>
-                <div className={styles.insightIcon}>🚀</div>
-                <div className={styles.insightContent}>
-                  <h4>Promova seus produtos</h4>
-                  <p>Nenhuma conversa iniciada ainda. Considere destacar seus produtos ou ajustar os preços.</p>
-                </div>
-              </div>
-            )}
-
-            {featuredProducts.length === 0 && (
+            {featuredProducts.length === 0 && totalProducts > 0 && (
               <div className={styles.insightCard}>
                 <div className={styles.insightIcon}>⭐</div>
                 <div className={styles.insightContent}>
@@ -163,12 +146,22 @@ const Analytics = () => {
               </div>
             )}
 
-            {conversionRate < 10 && totalConversations > 0 && (
+            {totalProducts === 0 && (
               <div className={styles.insightCard}>
-                <div className={styles.insightIcon}>📝</div>
+                <div className={styles.insightIcon}>🚀</div>
                 <div className={styles.insightContent}>
-                  <h4>Melhore suas descrições</h4>
-                  <p>Sua taxa de conversão está baixa. Considere melhorar as descrições e fotos dos produtos.</p>
+                  <h4>Comece cadastrando seus produtos</h4>
+                  <p>Adicione seus primeiros produtos para aparecer para os clientes.</p>
+                </div>
+              </div>
+            )}
+
+            {totalRevenue > 0 && (
+              <div className={styles.insightCard}>
+                <div className={styles.insightIcon}>💰</div>
+                <div className={styles.insightContent}>
+                  <h4>Potencial de vendas</h4>
+                  <p>Seu estoque tem um valor total de {formatPrice(totalRevenue)}.</p>
                 </div>
               </div>
             )}

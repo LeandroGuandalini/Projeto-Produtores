@@ -4,7 +4,7 @@ import { validatePrice, validateRequired } from '../../utils/validators';
 import styles from './AddProduct.module.css';
 
 const AddProduct = ({ onSuccess }) => {
-  const { currentUser, addProduct } = useApp();
+  const { currentUser, addProduct, defaultImages } = useApp();
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -71,12 +71,25 @@ const AddProduct = ({ onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      console.log('Formulário inválido:', errors);
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
-      await addProduct(formData);
+      console.log('Tentando cadastrar produto:', formData);
+      
+      // Se não tiver imagem, usar imagem padrão
+      const productData = {
+        ...formData,
+        price: parseFloat(formData.price),
+        image: formData.image || defaultImages.product
+      };
+      
+      const newProduct = await addProduct(productData);
+      console.log('Produto cadastrado com sucesso:', newProduct);
       
       // Reset form
       setFormData({
@@ -90,9 +103,15 @@ const AddProduct = ({ onSuccess }) => {
       
       // Navigate back
       if (onSuccess) {
+        console.log('Chamando onSuccess');
         onSuccess();
+      } else {
+        console.log('onSuccess não definido');
+        alert('Produto cadastrado com sucesso! Você pode verificar no seu dashboard.');
       }
+
     } catch (error) {
+      console.error('Erro ao cadastrar produto:', error);
       alert('Erro ao cadastrar produto: ' + error.message);
     } finally {
       setIsSubmitting(false);
@@ -204,6 +223,9 @@ const AddProduct = ({ onSuccess }) => {
                 className={styles.input}
                 placeholder="https://exemplo.com/imagem.jpg"
               />
+              <small className={styles.helpText}>
+                Deixe em branco para usar uma imagem padrão
+              </small>
             </div>
           </div>
 
@@ -222,13 +244,22 @@ const AddProduct = ({ onSuccess }) => {
             />
           </div>
 
-          <button 
-            type="submit" 
-            className={styles.submitButton}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Cadastrando...' : 'Cadastrar Produto'}
-          </button>
+          <div className={styles.formActions}>
+            <button 
+              type="button" 
+              onClick={() => window.history.back()}
+              className={styles.cancelButton}
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              className={styles.submitButton}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Cadastrando...' : 'Cadastrar Produto'}
+            </button>
+          </div>
         </form>
       </div>
     </div>

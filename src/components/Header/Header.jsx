@@ -3,8 +3,8 @@ import { useApp } from '../../context/AppContext';
 import SearchBar from '../SearchBar/SearchBar';
 import styles from './Header.module.css';
 
-const Header = ({ currentPage, setCurrentPage }) => {
-  const { currentUser, logout } = useApp();
+const Header = ({ currentPage, setCurrentPage, onShowFavorites }) => {
+  const { currentUser, logout, favorites } = useApp();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
@@ -30,6 +30,20 @@ const Header = ({ currentPage, setCurrentPage }) => {
 
         <div className={styles.searchContainer}>
           <SearchBar />
+        </div>
+
+        {/* Botão de Favoritos */}
+        <div className={styles.actionButtons}>
+          <button 
+            className={styles.actionBtn}
+            onClick={onShowFavorites}
+            title="Favoritos"
+          >
+            ⭐
+            {favorites.length > 0 && (
+              <span className={styles.badge}>{favorites.length}</span>
+            )}
+          </button>
         </div>
 
         <nav className={`${styles.nav} ${showMobileMenu ? styles.navOpen : ''}`}>
@@ -79,6 +93,12 @@ const Header = ({ currentPage, setCurrentPage }) => {
                     >
                       ➕ Cadastrar Produto
                     </button>
+                    <button 
+                      className={styles.dropdownItem}
+                      onClick={() => handleNavigation('analytics')}
+                    >
+                      📈 Analytics
+                    </button>
                     <div className={styles.dropdownDivider}></div>
                     <button 
                       className={styles.dropdownItem}
@@ -122,4 +142,3 @@ const Header = ({ currentPage, setCurrentPage }) => {
 };
 
 export default Header;
-

@@ -1,5 +1,5 @@
-// pages/Products/Products.js
 import React from 'react';
+import { useApp } from '../../context/AppContext';
 import { useProducts } from '../../hooks/useProducts';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import Filter from '../../components/Filter/Filter';
@@ -7,6 +7,15 @@ import styles from './Products.module.css';
 
 const Products = ({ onProductSelect }) => {
   const { products, categories, totalProducts, filteredCount } = useProducts();
+  const { setFilters, filters } = useApp();
+
+  const handleCategoryClick = (category) => {
+    setFilters({ category });
+  };
+
+  const handleAllCategories = () => {
+    setFilters({ category: '' });
+  };
 
   return (
     <div className={styles.products}>
@@ -22,15 +31,29 @@ const Products = ({ onProductSelect }) => {
           <aside className={styles.sidebar}>
             <Filter />
             <div className={styles.categoriesList}>
-              <h3>Categorias</h3>
+              <h3>Categorias ({categories.length})</h3>
               <ul>
-                {categories.map(category => (
-                  <li key={category}>
-                    <button className={styles.categoryButton}>
-                      {category} <span>({products.filter(p => p.category === category).length})</span>
-                    </button>
-                  </li>
-                ))}
+                <li>
+                  <button 
+                    className={`${styles.categoryButton} ${!filters.category ? styles.active : ''}`}
+                    onClick={handleAllCategories}
+                  >
+                    Todas as categorias <span>({totalProducts})</span>
+                  </button>
+                </li>
+                {categories.map(category => {
+                  const categoryCount = products.filter(p => p.category === category).length;
+                  return (
+                    <li key={category}>
+                      <button 
+                        className={`${styles.categoryButton} ${filters.category === category ? styles.active : ''}`}
+                        onClick={() => handleCategoryClick(category)}
+                      >
+                        {category} <span>({categoryCount})</span>
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </aside>
@@ -50,6 +73,12 @@ const Products = ({ onProductSelect }) => {
               <div className={styles.emptyState}>
                 <h3>Nenhum produto encontrado</h3>
                 <p>Tente ajustar os filtros ou buscar por outros termos.</p>
+                <button 
+                  onClick={() => window.location.reload()}
+                  className={styles.refreshButton}
+                >
+                  Recarregar página
+                </button>
               </div>
             )}
           </main>

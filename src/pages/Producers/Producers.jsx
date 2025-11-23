@@ -1,4 +1,3 @@
-// pages/Producers/Producers.js
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import ProducerCard from '../../components/ProducerCard/ProducerCard';

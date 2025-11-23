@@ -1,4 +1,3 @@
-// pages/ProductDetail/ProductDetail.js
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { formatPrice } from '../../utils/formatters';

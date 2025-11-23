@@ -1,34 +1,33 @@
-// components/Filter/Filter.js
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import styles from './Filter.module.css';
 
 const Filter = () => {
-  const { filters, setFilters, categories } = useApp();
+  const { filters, setFilters, categories, clearFilters } = useApp();
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value
-    }));
-  };
-
-  const clearFilters = () => {
+    console.log(`Alterando filtro ${key}:`, value);
     setFilters({
-      category: '',
-      maxPrice: '',
-      location: ''
+      [key]: value
     });
   };
 
+  const handleClearFilters = () => {
+    console.log('Limpando filtros');
+    clearFilters();
+  };
+
   const hasActiveFilters = filters.category || filters.maxPrice || filters.location;
+
+  console.log('Filtros atuais:', filters);
+  console.log('Categorias disponíveis:', categories);
 
   return (
     <div className={styles.filter}>
       <div className={styles.filterHeader}>
         <h3>Filtros</h3>
         {hasActiveFilters && (
-          <button onClick={clearFilters} className={styles.clearButton}>
+          <button onClick={handleClearFilters} className={styles.clearButton}>
             Limpar
           </button>
         )}
@@ -75,6 +74,10 @@ const Filter = () => {
           placeholder="Ex: São Paulo"
           className={styles.input}
         />
+      </div>
+
+      <div className={styles.filterInfo}>
+        <small>Altere os filtros e veja os resultados em tempo real</small>
       </div>
     </div>
   );

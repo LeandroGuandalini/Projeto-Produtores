@@ -4,7 +4,7 @@ import { formatPrice } from '../../utils/formatters';
 import styles from './ProductCard.module.css';
 
 const ProductCard = ({ product, onSelect }) => {
-  const { getProducerById, addToFavorites, removeFromFavorites, favorites, handleWhatsAppClick } = useApp();
+  const { getProducerById, addToFavorites, removeFromFavorites, favorites, handleWhatsAppClick, defaultImages } = useApp();
   const producer = getProducerById(product.producerId);
   const [imageError, setImageError] = useState(false);
 
@@ -29,8 +29,12 @@ const ProductCard = ({ product, onSelect }) => {
     }
   };
 
-  // Imagem padrão caso a URL falhe
-  const defaultImage = "https://picsum.photos/id/292/400/300";
+  const handleWhatsApp = (e) => {
+    e.stopPropagation();
+    if (producer) {
+      handleWhatsAppClick(product, producer);
+    }
+  };
 
   return (
     <div className={styles.productCard} onClick={handleCardClick}>
@@ -43,7 +47,7 @@ const ProductCard = ({ product, onSelect }) => {
           {isFavorite ? '❤️' : '🤍'}
         </button>
         <img 
-          src={imageError ? defaultImage : product.image} 
+          src={imageError ? defaultImages.product : (product.image || defaultImages.product)} 
           alt={product.name} 
           className={styles.image}
           onError={handleImageError}
@@ -69,10 +73,7 @@ const ProductCard = ({ product, onSelect }) => {
         
         <button 
           className={styles.whatsappButton} 
-          onClick={(e) => {
-            e.stopPropagation();
-            handleWhatsAppClick(product, producer);
-          }}
+          onClick={handleWhatsApp}
         >
           <span className={styles.whatsappIcon}>💬</span>
           Contatar via WhatsApp
